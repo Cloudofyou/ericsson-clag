@@ -1,0 +1,340 @@
+
+
+
+
+net add loopback lo ip address 10.19.100.2/32
+net add bgp autonomous-system 65001
+net add bgp router-id 10.19.100.2
+net add bgp network 10.19.100.2/32
+net add bgp neighbor swp51 remote-as external
+net add vlan 101 ip address 10.101.0.2/24
+net add vlan 102 ip address 10.102.0.2/24
+net add vlan 103 ip address 10.103.0.2/24
+net add vlan 104 ip address 10.104.0.2/24
+net add vlan 105 ip address 10.105.0.2/24
+net add vlan 106 ip address 10.106.0.2/24
+net add vlan 101 ip address-virtual 00:00:5e:00:01:01 10.101.0.1/24
+net add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.101.0.1/24
+net del vlan 102 ip address-virtual 00:00:5e:00:02:01 10.101.0.1/24
+net add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.102.0.1/24
+net add vlan 103 ip address-virtual 00:00:5e:00:03:01 10.103.0.1/24
+net add vlan 104 ip address-virtual 00:00:5e:00:04:01 10.104.0.1/24
+net add vlan 105 ip address-virtual 00:00:5e:00:05:01 10.105.0.1/24
+net add vlan 106 ip address-virtual 00:00:5e:00:06:01 10.106.0.1/24
+net add bgp network 10.101.0.0/24
+net add bgp network 10.102.0.0/24
+net add bgp network 10.103.0.0/24
+net add bgp network 10.104.0.0/24
+net add bgp network 10.105.0.0/24
+net add bgp network 10.106.0.0/24
+
+
+---------------------------------
+
+
+
+net add loopback lo ip address 10.19.100.3/32
+net add bgp autonomous-system 65002
+net add bgp router-id 10.19.100.3
+net add bgp network 10.19.100.3/32
+net add bgp neighbor swp51 remote-as external
+net add vlan 101 ip address 10.101.0.3/24
+net add vlan 102 ip address 10.102.0.3/24
+net add vlan 103 ip address 10.103.0.3/24
+net add vlan 104 ip address 10.104.0.3/24
+net add vlan 105 ip address 10.105.0.3/24
+net add vlan 106 ip address 10.106.0.3/24
+net add vlan 101 ip address-virtual 00:00:5e:00:01:01 10.101.0.1/24
+net add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.102.0.1/24
+net add vlan 103 ip address-virtual 00:00:5e:00:03:01 10.103.0.1/24
+net add vlan 104 ip address-virtual 00:00:5e:00:04:01 10.104.0.1/24
+net add vlan 105 ip address-virtual 00:00:5e:00:05:01 10.105.0.1/24
+net add vlan 106 ip address-virtual 00:00:5e:00:06:01 10.106.0.1/24
+net add bgp network 10.101.0.0/24
+net add bgp network 10.102.0.0/24
+net add bgp network 10.103.0.0/24
+net add bgp network 10.104.0.0/24
+net add bgp network 10.105.0.0/24
+net add bgp network 10.106.0.0/24
+
+
+---------------------------------------------------
+
+net add clag peer sys-mac 44:38:39:FF:01:01 interface swp49-50 primary backup-ip 10.19.100.3
+net add clag port bond bond01 interface swp1 clag-id 1
+net add clag port bond bond02 interface swp2 clag-id 2
+net add clag port bond bond03 interface swp3 clag-id 3
+net add clag port bond bond04 interface swp4 clag-id 4
+net add bond bond01 bridge trunk vlans 101-106
+net add bond bond02 bridge trunk vlans 101-106
+net add bond bond03 bridge trunk vlans 101-106
+net add bond bond04 bridge trunk vlans 101-106
+net add bond bond01 stp bpduguard
+net add bond bond02 stp bpduguard
+net add bond bond03 stp bpduguard
+net add bond bond04 stp bpduguard
+
+
+-------------------------------------------------------
+
+
+
+net add clag peer sys-mac 44:38:39:FF:01:01 interface swp49-50 secondary backup-ip 10.19.100.2
+net add clag port bond bond01 interface swp1 clag-id 1
+net add clag port bond bond02 interface swp2 clag-id 2
+net add clag port bond bond03 interface swp3 clag-id 3
+net add clag port bond bond04 interface swp4 clag-id 4
+net add bond bond01 bridge trunk vlans 101-106
+net add bond bond02 bridge trunk vlans 101-106
+net add bond bond03 bridge trunk vlans 101-106
+net add bond bond04 bridge trunk vlans 101-106
+net add bond bond01 stp bpduguard
+net add bond bond02 stp bpduguard
+net add bond bond03 stp bpduguard
+net add bond bond04 stp bpduguard
+
+
+----------------------
+
+LEAF01 - Config
+
+---------------------
+
+cumulus@leaf01:mgmt-vrf:~$ net show config commands
+net del all
+net add time zone Etc/UTC
+net add time ntp server 0.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 1.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 2.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 3.cumulusnetworks.pool.ntp.org iburst
+net add time ntp source eth0
+net add snmp-server listening-address localhost
+net add bgp autonomous-system 65001
+net add routing defaults datacenter
+net add routing service integrated-vtysh-config
+net add routing log syslog informational
+net add bgp router-id 10.19.100.2
+net add bgp neighbor swp51 interface remote-as external
+net add bgp ipv4 unicast network 10.19.100.2/32
+net add bgp ipv4 unicast network 10.101.0.0/24
+net add bgp ipv4 unicast network 10.102.0.0/24
+net add bgp ipv4 unicast network 10.103.0.0/24
+net add bgp ipv4 unicast network 10.104.0.0/24
+net add bgp ipv4 unicast network 10.105.0.0/24
+net add bgp ipv4 unicast network 10.106.0.0/24
+net add dns nameserver ipv4 192.168.200.254 vrf mgmt
+net add ptp global slave-only no
+net add ptp global priority1 255
+net add ptp global priority2 255
+net add ptp global domain-number 0
+net add ptp global logging-level 5
+net add ptp global path-trace-enabled no
+net add ptp global use-syslog yes
+net add ptp global verbose no
+net add ptp global summary-interval 0
+net add ptp global time-stamping
+net add bond bond01 bond slaves swp1
+net add bond bond02 bond slaves swp2
+net add bond bond03 bond slaves swp3
+net add bond bond04 bond slaves swp4
+net add bond peerlink bond slaves swp49,swp50
+net add bond bond01 clag id 1
+net add bond bond01,bond02,bond03,bond04 bridge vids 101-106
+net add bond bond01,bond02,bond03,bond04 stp bpduguard
+net add bond bond02 clag id 2
+net add bond bond03 clag id 3
+net add bond bond04 clag id 4
+net add bridge bridge ports peerlink,bond01,bond02,bond03,bond04
+net add bridge bridge vids 101-106
+net add bridge bridge vlan-aware
+net add interface eth0 vrf mgmt
+net add interface peerlink.4094 clag backup-ip 10.19.100.3
+net add interface peerlink.4094 clag peer-ip 169.254.1.2
+net add interface peerlink.4094 clag priority 1000
+net add interface peerlink.4094 clag sys-mac 44:38:39:FF:01:01
+net add interface peerlink.4094 ip address 169.254.1.1/30
+net add interface swp1-4,49-51
+net add loopback lo ip address 10.19.100.2/32
+net add vlan 101 ip address 10.101.0.2/24
+net add vlan 101 ip address-virtual 00:00:5e:00:01:01 10.101.0.1/24
+net add vlan 101 vlan-id 101
+net add vlan 101 vlan-raw-device bridge
+net add vlan 102 ip address 10.102.0.2/24
+net add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.102.0.1/24
+net add vlan 102 vlan-id 102
+net add vlan 102 vlan-raw-device bridge
+net add vlan 103 ip address 10.103.0.2/24
+net add vlan 103 ip address-virtual 00:00:5e:00:03:01 10.103.0.1/24
+net add vlan 103 vlan-id 103
+net add vlan 103 vlan-raw-device bridge
+net add vlan 104 ip address 10.104.0.2/24
+net add vlan 104 ip address-virtual 00:00:5e:00:04:01 10.104.0.1/24
+net add vlan 104 vlan-id 104
+net add vlan 104 vlan-raw-device bridge
+net add vlan 105 ip address 10.105.0.2/24
+net add vlan 105 ip address-virtual 00:00:5e:00:05:01 10.105.0.1/24
+net add vlan 105 vlan-id 105
+net add vlan 105 vlan-raw-device bridge
+net add vlan 106 ip address 10.106.0.2/24
+net add vlan 106 ip address-virtual 00:00:5e:00:06:01 10.106.0.1/24
+net add vlan 106 vlan-id 106
+net add vlan 106 vlan-raw-device bridge
+net add vrf mgmt ip address 127.0.0.1/8
+net add vrf mgmt vrf-table auto
+net add dot1x radius accounting-port 1813
+net add dot1x max-number-stations 4
+net add dot1x radius authentication-port 1812
+net add dot1x eap-reauth-period 0
+net add dot1x mab-activation-delay 30
+net commit
+
+
+
+
+------------------------
+
+LEAF02 - Config
+
+------------------------
+
+cumulus@leaf02:mgmt-vrf:~$ net show config commands
+net del all
+net add time zone Etc/UTC
+net add time ntp server 0.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 1.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 2.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 3.cumulusnetworks.pool.ntp.org iburst
+net add time ntp source eth0
+net add snmp-server listening-address localhost
+net add bgp autonomous-system 65002
+net add routing defaults datacenter
+net add routing service integrated-vtysh-config
+net add routing log syslog informational
+net add bgp router-id 10.19.100.3
+net add bgp neighbor swp51 interface remote-as external
+net add bgp ipv4 unicast network 10.19.100.3/32
+net add bgp ipv4 unicast network 10.101.0.0/24
+net add bgp ipv4 unicast network 10.102.0.0/24
+net add bgp ipv4 unicast network 10.103.0.0/24
+net add bgp ipv4 unicast network 10.104.0.0/24
+net add bgp ipv4 unicast network 10.105.0.0/24
+net add bgp ipv4 unicast network 10.106.0.0/24
+net add dns nameserver ipv4 192.168.200.254 vrf mgmt
+net add ptp global slave-only no
+net add ptp global priority1 255
+net add ptp global priority2 255
+net add ptp global domain-number 0
+net add ptp global logging-level 5
+net add ptp global path-trace-enabled no
+net add ptp global use-syslog yes
+net add ptp global verbose no
+net add ptp global summary-interval 0
+net add ptp global time-stamping
+net add bond bond01 bond slaves swp1
+net add bond bond02 bond slaves swp2
+net add bond bond03 bond slaves swp3
+net add bond bond04 bond slaves swp4
+net add bond peerlink bond slaves swp49,swp50
+net add bond bond01 clag id 1
+net add bond bond01,bond02,bond03,bond04 bridge vids 101-106
+net add bond bond01,bond02,bond03,bond04 stp bpduguard
+net add bond bond02 clag id 2
+net add bond bond03 clag id 3
+net add bond bond04 clag id 4
+net add bridge bridge ports peerlink,bond01,bond02,bond03,bond04
+net add bridge bridge vids 101-106
+net add bridge bridge vlan-aware
+net add interface eth0 vrf mgmt
+net add interface peerlink.4094 clag backup-ip 10.19.100.2
+net add interface peerlink.4094 clag peer-ip 169.254.1.1
+net add interface peerlink.4094 clag priority 2000
+net add interface peerlink.4094 clag sys-mac 44:38:39:FF:01:01
+net add interface peerlink.4094 ip address 169.254.1.2/30
+net add interface swp1-4,49-51
+net add loopback lo ip address 10.19.100.3/32
+net add vlan 101 ip address 10.101.0.3/24
+net add vlan 101 ip address-virtual 00:00:5e:00:01:01 10.101.0.1/24
+net add vlan 101 vlan-id 101
+net add vlan 101 vlan-raw-device bridge
+net add vlan 102 ip address 10.102.0.3/24
+net add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.102.0.1/24
+net add vlan 102 vlan-id 102
+net add vlan 102 vlan-raw-device bridge
+net add vlan 103 ip address 10.103.0.3/24
+net add vlan 103 ip address-virtual 00:00:5e:00:03:01 10.103.0.1/24
+net add vlan 103 vlan-id 103
+net add vlan 103 vlan-raw-device bridge
+net add vlan 104 ip address 10.104.0.3/24
+net add vlan 104 ip address-virtual 00:00:5e:00:04:01 10.104.0.1/24
+net add vlan 104 vlan-id 104
+net add vlan 104 vlan-raw-device bridge
+net add vlan 105 ip address 10.105.0.3/24
+net add vlan 105 ip address-virtual 00:00:5e:00:05:01 10.105.0.1/24
+net add vlan 105 vlan-id 105
+net add vlan 105 vlan-raw-device bridge
+net add vlan 106 ip address 10.106.0.3/24
+net add vlan 106 ip address-virtual 00:00:5e:00:06:01 10.106.0.1/24
+net add vlan 106 vlan-id 106
+net add vlan 106 vlan-raw-device bridge
+net add vrf mgmt ip address 127.0.0.1/8
+net add vrf mgmt vrf-table auto
+net add dot1x radius accounting-port 1813
+net add dot1x radius authentication-port 1812
+net add dot1x eap-reauth-period 0
+net add dot1x mab-activation-delay 30
+net commit
+
+---------------------------------
+
+INTERNET - Config
+
+-----------------------------
+
+cumulus@internet:mgmt-vrf:~$ net show config commands
+net del all
+net add time zone Etc/UTC
+net add time ntp server 0.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 1.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 2.cumulusnetworks.pool.ntp.org iburst
+net add time ntp server 3.cumulusnetworks.pool.ntp.org iburst
+net add time ntp source eth0
+net add snmp-server listening-address localhost
+net add bgp autonomous-system 65000
+net add routing defaults datacenter
+net add routing service integrated-vtysh-config
+net add routing log syslog informational
+net add bgp router-id 10.19.100.1
+net add bgp neighbor swp1 interface remote-as external
+net add bgp neighbor swp2 interface remote-as external
+net add bgp ipv4 unicast network 10.19.100.1/32
+net add bgp ipv4 unicast network 10.20.100.0/24
+net add bgp ipv4 unicast network 10.20.101.0/24
+net add dns nameserver ipv4 192.168.200.254 vrf mgmt
+net add ptp global slave-only no
+net add ptp global priority1 255
+net add ptp global priority2 255
+net add ptp global domain-number 0
+net add ptp global logging-level 5
+net add ptp global path-trace-enabled no
+net add ptp global use-syslog yes
+net add ptp global verbose no
+net add ptp global summary-interval 0
+net add ptp global time-stamping
+net add bridge bridge vids 20-21
+net add bridge bridge vlan-aware
+net add interface eth0 vrf mgmt
+net add interface swp1-2
+net add loopback lo ip address 10.19.100.1/32
+net add vlan 20 ip address 10.20.100.1/24
+net add vlan 20 vlan-id 20
+net add vlan 20 vlan-raw-device bridge
+net add vlan 21 ip address 10.20.101.1/24
+net add vlan 21 vlan-id 21
+net add vlan 21 vlan-raw-device bridge
+net add vrf mgmt ip address 127.0.0.1/8
+net add vrf mgmt vrf-table auto
+net add dot1x radius accounting-port 1813
+net add dot1x radius authentication-port 1812
+net add dot1x eap-reauth-period 0
+net add dot1x mab-activation-delay 30
+net commit

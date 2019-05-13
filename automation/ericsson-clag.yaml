@@ -1,0 +1,134 @@
+---
+- hosts: internet
+  tasks:
+   - name: Configure switch to act as campus/internet
+     nclu:
+       commands:
+
+         - add loopback lo ip address 10.19.100.1/32
+         - add vlan 20 ip address 10.20.100.1/24
+         - add vlan 21 ip address 10.20.101.1/24
+         - add interface swp1-2
+         - add bgp autonomous-system 65000
+         - add bgp neighbor swp1 interface remote-as external
+         - add bgp neighbor swp2 interface remote-as external
+         - add bgp network 10.19.100.1/32
+         - add bgp network 10.20.100.0/24
+         - add bgp network 10.20.101.0/24
+
+       commit: true
+
+- hosts: leaf01
+  tasks:
+   - name: Configure leaf01
+     nclu:
+       commands:
+
+         - add loopback lo ip address 10.19.100.2/32
+         - add bgp autonomous-system 65001
+         - add bgp router-id 10.19.100.2
+         - add bgp network 10.19.100.2/32
+         - add bgp neighbor swp51 remote-as external
+         - add interface swp1-4,swp49-51
+         - add vlan 101,102,103,104,105,106
+         - add clag peer sys-mac 44:38:39:FF:01:01 interface swp49-50 primary backup-ip 10.19.100.3
+         - add clag port bond bond01 interface swp1 clag-id 1
+         - add clag port bond bond02 interface swp2 clag-id 2
+         - add clag port bond bond03 interface swp3 clag-id 3
+         - add clag port bond bond04 interface swp4 clag-id 4
+         - add bond bond01 bridge trunk vlans 101-106
+         - add bond bond02 bridge trunk vlans 101-106
+         - add bond bond03 bridge trunk vlans 101-106
+         - add bond bond04 bridge trunk vlans 101-106
+         - add bond bond01 stp bpduguard
+         - add bond bond02 stp bpduguard
+         - add bond bond03 stp bpduguard
+         - add bond bond04 stp bpduguard
+         - add vlan 101 ip address 10.97.81.2/25
+         - add vlan 102 ip address 10.97.81.130/25
+         - add vlan 103 ip address 172.25.103.2/24
+         - add vlan 104 ip address 172.25.104.2/24
+         - add vlan 105 ip address 172.25.105.2/24
+         - add vlan 106 ip address 172.25.106.2/24
+         - add vlan 101 ip address-virtual 00:00:5e:00:01:01 10.97.81.1/25
+         - add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.97.81.129/25
+         - add vlan 103 ip address-virtual 00:00:5e:00:03:01 172.25.103.1/24
+         - add vlan 104 ip address-virtual 00:00:5e:00:04:01 172.25.104.1/24
+         - add vlan 105 ip address-virtual 00:00:5e:00:05:01 172.25.105.1/24
+         - add vlan 106 ip address-virtual 00:00:5e:00:06:01 172.25.106.1/24
+         - add bgp network 10.97.81.0/25
+         - add bgp network 10.97.81.128/25
+         - add bgp network 172.25.103.0/24
+         - add bgp network 172.25.104.0/24
+         - add bgp network 172.25.105.0/24
+         - add bgp network 172.25.106.0/24
+
+       commit: true
+
+- hosts: leaf02
+  tasks:
+   - name: Configure leaf02
+     nclu:
+       commands:
+
+         - add loopback lo ip address 10.19.100.3/32
+         - add bgp autonomous-system 65002
+         - add bgp router-id 10.19.100.3
+         - add bgp network 10.19.100.3/32
+         - add bgp neighbor swp51 remote-as external
+         - add interface swp1-4,swp49-51
+         - add vlan 101,102,103,104,105,106
+         - add clag peer sys-mac 44:38:39:FF:01:01 interface swp49-50 secondary backup-ip 10.19.100.3
+         - add clag port bond bond01 interface swp1 clag-id 1
+         - add clag port bond bond02 interface swp2 clag-id 2
+         - add clag port bond bond03 interface swp3 clag-id 3
+         - add clag port bond bond04 interface swp4 clag-id 4
+         - add bond bond01 bridge trunk vlans 101-106
+         - add bond bond02 bridge trunk vlans 101-106
+         - add bond bond03 bridge trunk vlans 101-106
+         - add bond bond04 bridge trunk vlans 101-106
+         - add bond bond01 stp bpduguard
+         - add bond bond02 stp bpduguard
+         - add bond bond03 stp bpduguard
+         - add bond bond04 stp bpduguard
+         - add vlan 101 ip address 10.97.81.3/25
+         - add vlan 102 ip address 10.97.81.131/25
+         - add vlan 103 ip address 172.25.103.3/24
+         - add vlan 104 ip address 172.25.104.3/24
+         - add vlan 105 ip address 172.25.105.3/24
+         - add vlan 106 ip address 172.25.106.3/24
+         - add vlan 101 ip address-virtual 00:00:5e:00:01:01 10.97.81.1/25
+         - add vlan 102 ip address-virtual 00:00:5e:00:02:01 10.97.81.129/25
+         - add vlan 103 ip address-virtual 00:00:5e:00:03:01 172.25.103.1/24
+         - add vlan 104 ip address-virtual 00:00:5e:00:04:01 172.25.104.1/24
+         - add vlan 105 ip address-virtual 00:00:5e:00:05:01 172.25.105.1/24
+         - add vlan 106 ip address-virtual 00:00:5e:00:06:01 172.25.106.1/24
+         - add bgp network 10.97.81.0/25
+         - add bgp network 10.97.81.128/25
+         - add bgp network 172.25.103.0/24
+         - add bgp network 172.25.104.0/24
+         - add bgp network 172.25.105.0/24
+         - add bgp network 172.25.106.0/24
+
+       commit: true
+
+- name: Configure Server LACP Interfaces
+  hosts: servers,storage
+  become: yes
+  gather_facts: yes
+  tasks:
+
+  - name: Copy Server LACP Interface Config
+    copy:
+      src: configurations/{{ansible_hostname}}/interfaces
+      dest: /etc/network/interfaces
+    register: reboot
+
+  - name: reboot
+    reboot:
+      pre_reboot_delay: 60
+
+  - name: Install traceroute
+    apt:
+      name: traceroute
+      update_cache: yes

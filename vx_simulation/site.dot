@@ -1,0 +1,23 @@
+graph site {
+ "internet" [function="internet" os="CumulusCommunity/cumulus-vx" version="3.7.6" memory="1024" config="./helper_scripts/extra_switch_config.sh" mgmt_ip="192.168.200.1"]
+ "leaf01" [function="leaf" os="CumulusCommunity/cumulus-vx" version="3.7.6" memory="1024" config="./helper_scripts/extra_switch_config.sh" mgmt_ip="192.168.200.2"]
+ "leaf02" [function="leaf" os="CumulusCommunity/cumulus-vx" version="3.7.6" memory="1024" config="./helper_scripts/extra_switch_config.sh" mgmt_ip="192.168.200.3"]
+ "server01" [function="host" os="yk0/ubuntu-xenial" memory="768" config="./helper_scripts/extra_server_config.sh" mgmt_ip="192.168.200.10"]
+ "server02" [function="host" os="yk0/ubuntu-xenial" memory="768" config="./helper_scripts/extra_server_config.sh" mgmt_ip="192.168.200.11"]
+ "server03" [function="host" os="yk0/ubuntu-xenial" memory="768" config="./helper_scripts/extra_server_config.sh" mgmt_ip="192.168.200.12"]
+ "server04" [function="host" os="yk0/ubuntu-xenial" memory="768" config="./helper_scripts/extra_server_config.sh" mgmt_ip="192.168.200.13"]
+
+"internet":"swp1" -- "leaf01":"swp51"
+"internet":"swp2" -- "leaf02":"swp51"
+"leaf01":"swp49" -- "leaf02":"swp49"
+"leaf01":"swp50" -- "leaf02":"swp50"
+"leaf01":"swp1" -- "server01":"eth1"
+"leaf01":"swp2" -- "server02":"eth1"
+"leaf01":"swp3" -- "server03":"eth1"
+"leaf01":"swp4" -- "server04":"eth1"
+"leaf02":"swp1" -- "server01":"eth2"
+"leaf02":"swp2" -- "server02":"eth2"
+"leaf02":"swp3" -- "server03":"eth2"
+"leaf02":"swp4" -- "server04":"eth2"
+
+}
