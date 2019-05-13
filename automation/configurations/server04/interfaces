@@ -28,45 +28,44 @@ iface bond0 inet manual
 
 auto bond0.101
 iface bond0.101 inet static
-    address 10.101.0.14
-    netmask 255.255.255.0
-    gateway 10.101.0.1
+    address 10.97.81.14
+    netmask 255.255.255.128
+    gateway 10.97.81.1
     vlan-raw-device bond0
 
 auto bond0.102
 iface bond0.102 inet static
-    address 10.102.0.14
-    netmask 255.255.255.0
-    gateway 10.102.0.1
+    address 10.97.81.142
+    netmask 255.255.255.128
+    gateway 10.97.81.129
     vlan-raw-device bond0
 
 auto bond0.103
 iface bond0.103 inet static
-    address 10.103.0.14
+    address 172.25.103.14
     netmask 255.255.255.0
-    gateway 10.103.0.1
+    gateway 172.25.103.1
     vlan-raw-device bond0
 
 auto bond0.104
 iface bond0.104 inet static
-    address 10.104.0.14
+    address 172.25.104.14
     netmask 255.255.255.0
-    gateway 10.104.0.1
+    gateway 172.25.104.1
     vlan-raw-device bond0
 
 auto bond0.105
 iface bond0.105 inet static
-    address 10.105.0.14
+    address 172.25.105.14
     netmask 255.255.255.0
-    gateway 10.105.0.1
+    gateway 172.25.105.1
     vlan-raw-device bond0
 
 auto bond0.106
 iface bond0.106 inet static
-    address 10.106.0.14
+    address 172.25.106.14
     netmask 255.255.255.0
-    gateway 10.106.0.1
+    gateway 172.25.106.1
     vlan-raw-device bond0
 
 source /etc/network/interfaces.d/*.cfg
-
