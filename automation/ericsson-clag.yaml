@@ -113,7 +113,7 @@
        commit: true
 
 - name: Configure Server LACP Interfaces
-  hosts: servers,storage
+  hosts: servers
   become: yes
   gather_facts: yes
   tasks:
